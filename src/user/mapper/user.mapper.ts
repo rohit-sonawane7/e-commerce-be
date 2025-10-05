@@ -4,46 +4,56 @@ import { AuthProcessEnums } from 'src/auth/enums/auth.enums';
 import { SignUpRequestDto } from 'src/auth/dto/Request/signup.dto';
 import { JwtAccessTokenDto } from 'src/auth/dto/Response/jwt.dto';
 import { LoginResponseDto } from 'src/auth/dto/Response/login.dto';
+import { CreateUserDto } from '../dto/request/create-user.dto';
+import { UserResponseDto } from '../dto/response/user-response.dto';
+import { UpdateUserDto } from '../dto/request/update-user.dto';
 
 export class UserMapper {
 
-    static toEntityFromCreate(dto: SignUpRequestDto): User {
+    static toEntity(dto: CreateUserDto): User {
         const user = new User();
-        user.first_name = dto.first_name;
-        user.last_name = dto.last_name;
+        user.first_name = dto.firstName;
+        user.last_name = dto.lastName;
         user.email = dto.email;
         user.password = dto.password;
-        user.role = UserRole.CUSTOMER;
+        user.role = dto.role;;
         user.is_email_verified = false;
         return user;
     }
 
-    static toResponseDto(user: User): SignUpResponseDto {
+    static toResponse(user: User): UserResponseDto {
         return {
             id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
+            firstName: user.first_name,
+            lastName: user.last_name,
             email: user.email,
             role: user.role,
-            is_email_verified: user.is_email_verified,
-            created_at: user.created_at,
-            updated_at: user.updated_at,
-            message: AuthProcessEnums.SIGN_UP
+            isEmailVerified: user.is_email_verified,
+            createdAt: user.created_at,
+            updatedAt: user.updated_at
+        };
+    }
+
+    static updateUserMapper(user: UpdateUserDto): Partial<User> {
+        return {
+            first_name: user.firstName,
+            last_name: user.lastName,
+            updated_at: new Date()
         };
     }
 
     static toResponseDtoList(users: User[]): SignUpResponseDto[] {
-        return users.map((user) => this.toResponseDto(user));
+        return users.map((user) => this.toResponse(user));
     }
 
-    static jwtUserMapper(user: User): Partial<User> {
+    static jwtUserMapper(user: User): UserResponseDto {
         return {
             id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
+            firstName: user.first_name,
+            lastName: user.last_name,
             role: user.role,
             email: user.email,
-            is_email_verified: user.is_email_verified,
+            isEmailVerified: user.is_email_verified
         }
     }
 
@@ -51,14 +61,14 @@ export class UserMapper {
         return {
             user: {
                 id: user.id,
-                first_name: user.first_name,
-                last_name: user.last_name,
+                firstName: user.first_name,
+                lastName: user.last_name,
                 role: user.role,
                 email: user.email,
-                is_email_verified: user.is_email_verified,
+                isEmailVerified: user.is_email_verified,
             },
-            access_token: jwtAccessToken.access_token,
-            refresh_token: jwtAccessToken.refresh_token
+            accessToken: jwtAccessToken.access_token,
+            refreshToken: jwtAccessToken.refresh_token
         }
     }
 }

@@ -8,11 +8,13 @@ export class EmailService {
   private readonly brevoClient: SibApiV3Sdk.TransactionalEmailsApi;
   private readonly fromEmail: string;
   private readonly fromName: string;
+  private readonly replyToEmail: string;
 
   constructor(private readonly configService: ConfigService) {
     const apiKey = this.configService.get<string>('email.apiKey');
     this.fromEmail = this.configService.get<string>('email.fromEmail') as string;
     this.fromName = this.configService.get<string>('email.fromName') as string;
+    this.replyToEmail = this.configService.get<string>('email.replyToEmail') as string;
 
     const defaultClient = SibApiV3Sdk.ApiClient.instance;
     const auth = defaultClient.authentications['api-key'];
@@ -25,6 +27,7 @@ export class EmailService {
     try {
       const email = {
         sender: { name: this.fromName, email: this.fromEmail },
+        replyTo: { email: this.replyToEmail },
         to: [{ email: to }],
         subject,
         htmlContent,

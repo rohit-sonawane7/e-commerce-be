@@ -2,30 +2,49 @@ import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/co
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { User } from '../user/entities/user.entity';
+import { User, UserRole } from '../user/entities/user.entity';
 import { SignUpRequestDto } from './dto/Request/signup.dto';
 import { LoginRequestDto } from './dto/Request/login.dto';
 import { SignUpResponseDto } from './dto/Response/signup.dto';
 import { UserMapper } from 'src/user/mapper/user.mapper';
 import { JwtAccessTokenDto } from './dto/Response/jwt.dto';
 import { LoginResponseDto } from './dto/Response/login.dto';
+import { UserResponseDto } from 'src/user/dto/response/user-response.dto';
+import { ResetPasswordDto } from './dto/Request/reset-password.dto';
+import { ResponseMessageDto } from '../common/dto/Response/response-message.dto';
+// import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
 
   ) { }
 
-  async generateTokens(user: Partial<User>): Promise<JwtAccessTokenDto> {
+  async signup(dto: SignUpRequestDto): Promise<SignUpResponseDto> {
+    const existingUser = await this.userService.findByEmail(dto.email);
+    if (existingUser) throw new ConflictException('Email already registered');
+    dto.password = await bcrypt.hash(dto.password, 10);
+    return this.userService.createUser({ ...dto, role: UserRole.CUSTOMER });
+  }
 
-    const accessToken = await this.jwtService.signAsync(user, {
+  async generateTokens(user: Partial<User>): Promise<JwtAccessTokenDto> {
+    const payload = {
+      id: user.id,
+      role: user.role,
+      email: user.email,
+      lastName: user.last_name,
+      firstName: user.first_name,
+      isEmailVerified: user.is_email_verified
+    }
+
+    const accessToken = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_ACCESS_SECRET,
       expiresIn: '15m',
     });
 
-    const refreshToken = await this.jwtService.signAsync(user, {
+    const refreshToken = await this.jwtService.signAsync(payload, {
       secret: process.env.JWT_REFRESH_SECRET,
       expiresIn: '7d',
     });
@@ -53,14 +72,6 @@ export class AuthService {
     return user;
   }
 
-  async signup(dto: SignUpRequestDto): Promise<SignUpResponseDto> {
-    const existingUser = await this.userService.findByEmail(dto.email);
-    if (existingUser) throw new ConflictException('Email already registered');
-    dto.password = await bcrypt.hash(dto.password, 10);
-    const user = await this.userService.createUser(UserMapper.toEntityFromCreate(dto));
-    return UserMapper.toResponseDto(user);
-  }
-
   async login(dto: LoginRequestDto): Promise<LoginResponseDto> {
     const user = await this.userService.findByEmail(dto.email);
     if (!user) throw new UnauthorizedException('Invalid credentials');
@@ -68,13 +79,20 @@ export class AuthService {
     const isMatch = await bcrypt.compare(dto.password, user.password);
     if (!isMatch) throw new UnauthorizedException('Invalid credentials');
 
-    const jwtTokens = await this.generateTokens(UserMapper.jwtUserMapper(user));
-    return {
-      user,
-      access_token: jwtTokens.access_token,
-      refresh_token: jwtTokens.refresh_token
+    const jwtTokens = await this.generateTokens(user);
+    return UserMapper.loginUserMapper(user, jwtTokens);
+  }
 
-    }
+  async resetPassword(dto: ResetPasswordDto): Promise<ResponseMessageDto> {
+    const user = await this.userService.findById(dto.id);
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
+    const isPasswordValid = await bcrypt.compare(dto.currentPassword, user.password);
+    if (!isPasswordValid) throw new UnauthorizedException('Invalid Current Password');
+
+    user.password = await bcrypt.hash(dto.newPassword, 10);
+    await this.userService.updateUserPassword(dto.id, dto.newPassword);
+    return { message: "Password Updated Successfully" };
   }
 
 }

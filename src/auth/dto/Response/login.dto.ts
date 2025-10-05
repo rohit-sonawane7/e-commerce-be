@@ -1,9 +1,8 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { User } from "src/user/entities/user.entity";
+import { UserResponseDto } from "src/user/dto/response/user-response.dto";
 
 export class LoginResponseDto {
-    user: Partial<User>
-    access_token: string;
-    refresh_token: string;
+    user: UserResponseDto;
+    accessToken: string;
+    refreshToken: string;
 
 }
