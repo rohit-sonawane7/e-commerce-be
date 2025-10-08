@@ -5,11 +5,11 @@ import { EmailService } from './email.service';
 export class EmailController {
   constructor(private readonly emailService: EmailService) { }
 
-  @Post('test')
-  @HttpCode(HttpStatus.OK)
-  async sendTest(@Body() body: { to: string }) {
-    return this.emailService.sendTestEmail(body.to);
-  }
+  // @Post('test')
+  // @HttpCode(HttpStatus.OK)
+  // async sendTest(@Body() body: { to: string }) {
+  //   return this.emailService.signUpAndVerifyEmail(body.to);
+  // }
 
   @Post('promotion')
   @HttpCode(HttpStatus.OK)

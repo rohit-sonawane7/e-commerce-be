@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as SibApiV3Sdk from 'sib-api-v3-sdk';
+import fs from "fs";
+import path from "path";
+
 
 @Injectable()
 export class EmailService {
@@ -69,8 +72,10 @@ export class EmailService {
     );
   }
 
-  async sendTestEmail(to: string) {
-    return this.sendEmail(to, 'Test Email', '<p>This is a test email from MyApp.</p>');
+  async signUpAndVerifyEmail(to: string, data: Object) {
+    const templateName = "signup-email-template";
+    const template = this.generateEmailTemplate(templateName, data);
+    return this.sendEmail(to, 'Verify Email', template);
   }
 
   async sendPromotionEmail(to: string, content: string) {
@@ -80,4 +85,17 @@ export class EmailService {
       `<h1>Promotion</h1><p>${content}</p>`
     );
   }
+
+  generateEmailTemplate(templateName: string, variables: Object) {
+    const templatePath = path.join(process.cwd(), "src/email/templates", `${templateName}.html`);
+    let html = fs.readFileSync(templatePath, "utf8");
+
+    for (const [key, value] of Object.entries(variables)) {
+      const regex = new RegExp(`{{\\s*${key}\\s*}}`, "g");
+      html = html.replace(regex, value);
+    }
+
+    return html;
+  }
+
 }

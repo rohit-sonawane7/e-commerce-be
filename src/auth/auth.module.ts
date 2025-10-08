@@ -7,6 +7,7 @@ import { AuthController } from './auth.controller';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { EmailService } from 'src/email/email.service';
 
 
 
@@ -23,7 +24,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, UserService],
+  providers: [AuthService, JwtStrategy, UserService, EmailService],
   exports: [AuthService]
 })
 export class AuthModule { }

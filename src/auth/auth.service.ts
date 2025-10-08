@@ -12,6 +12,8 @@ import { LoginResponseDto } from './dto/Response/login.dto';
 import { UserResponseDto } from 'src/user/dto/response/user-response.dto';
 import { ResetPasswordDto } from './dto/Request/reset-password.dto';
 import { ResponseMessageDto } from '../common/dto/Response/response-message.dto';
+import { EmailService } from 'src/email/email.service';
+import { ConfigService } from '@nestjs/config';
 // import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
@@ -19,14 +21,26 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-
+    private readonly emailService: EmailService,
+    private readonly configService: ConfigService
   ) { }
 
   async signup(dto: SignUpRequestDto): Promise<SignUpResponseDto> {
     const existingUser = await this.userService.findByEmail(dto.email);
     if (existingUser) throw new ConflictException('Email already registered');
     dto.password = await bcrypt.hash(dto.password, 10);
-    return this.userService.createUser({ ...dto, role: UserRole.CUSTOMER });
+    const createdUser = await this.userService.createUser({ ...dto, role: UserRole.CUSTOMER });
+
+    const emailData = {
+      YEAR: new Date().getFullYear(),
+      NAME: createdUser.firstName,
+      LOGO_URL: "/home/rohitsonawane/SELF/BUSINESS/BE/fashion-backend/src/assests/logo.png",
+      BRAND_NAME: this.configService.get<string>('BRAND_NAME'),
+      SUPPORT_EMAIL: this.configService.get<string>('SUPPORT_EMAIL'),
+      VERIFICATION_URL: this.configService.get<string>('VERIFICATION_URL')
+    }
+    await this.emailService.signUpAndVerifyEmail(createdUser.email, emailData);
+    return createdUser;
   }
 
   async generateTokens(user: Partial<User>): Promise<JwtAccessTokenDto> {
