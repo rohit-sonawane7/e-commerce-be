@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { EmailModule } from './email/email.module';
 import { ProductModule } from './product/product.module';
 import { ReviewModule } from './review/review.module';
+import { PhoneNumberModule } from './phone-number/phone-number.module';
 
 @Module({
   imports: [
@@ -40,7 +41,8 @@ import { ReviewModule } from './review/review.module';
     UserModule,
     EmailModule,
     ProductModule,
-    ReviewModule
+    ReviewModule,
+    PhoneNumberModule
   ],
   providers: [
     {
