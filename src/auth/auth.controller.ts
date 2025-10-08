@@ -6,6 +6,7 @@ import { SignUpResponseDto } from './dto/Response/signup.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ResetPasswordDto } from './dto/Request/reset-password.dto';
 import { ResponseMessageDto } from 'src/common/dto/Response/response-message.dto';
+import { randomUUID } from 'crypto';
 
 @Controller('auth')
 export class AuthController {
@@ -48,5 +49,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);
+  }
+
+  @Get('init')
+  init() {
+    const sessionId = randomUUID();
+    return { sessionId };
   }
 }

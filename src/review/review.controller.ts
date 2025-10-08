@@ -16,7 +16,6 @@ import { ReviewMapper } from './mapper/review.mapper';
 export class ReviewController {
     constructor(private readonly reviewService: ReviewService) { }
 
-    // 🔹 Authenticated users only
     @Post()
     @UseGuards(JwtAuthGuard)
     async create(@Body() dto: CreateReviewDto, @Req() req) {

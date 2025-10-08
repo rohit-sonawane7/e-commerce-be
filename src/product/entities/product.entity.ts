@@ -1,4 +1,3 @@
-// product.entity.ts
 import {
     Entity,
     PrimaryGeneratedColumn,
@@ -6,6 +5,7 @@ import {
     OneToMany,
 } from 'typeorm';
 import { Review } from '../../review/entities/review.entity';
+import { ProductReaction } from 'src/product-reaction/entities/product-reaction.entity';
 
 @Entity()
 export class Product {
@@ -57,7 +57,15 @@ export class Product {
     @Column('text', { array: true, nullable: true })
     tags?: string[];
 
-    // reviews relationship
     @OneToMany(() => Review, (review) => review.product)
     reviews: Review[];
+
+    @Column({ default: 0 })
+    likeCount: number;
+
+    @Column({ default: 0 })
+    dislikeCount: number;
+
+    @OneToMany(() => ProductReaction, (reaction) => reaction.product)
+    reactions: ProductReaction[];
 }

@@ -9,6 +9,8 @@ import { EmailModule } from './email/email.module';
 import { ProductModule } from './product/product.module';
 import { ReviewModule } from './review/review.module';
 import { PhoneNumberModule } from './phone-number/phone-number.module';
+import { ProductReactionModule } from './product-reaction/product-reaction.module';
+import { ProductReviewModule } from './product-review/product-review.module';
 
 @Module({
   imports: [
@@ -42,7 +44,9 @@ import { PhoneNumberModule } from './phone-number/phone-number.module';
     EmailModule,
     ProductModule,
     ReviewModule,
-    PhoneNumberModule
+    PhoneNumberModule,
+    ProductReactionModule,
+    ProductReviewModule
   ],
   providers: [
     {
