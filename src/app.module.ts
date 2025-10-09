@@ -11,6 +11,7 @@ import { ReviewModule } from './review/review.module';
 import { PhoneNumberModule } from './phone-number/phone-number.module';
 import { ProductReactionModule } from './product-reaction/product-reaction.module';
 import { ProductReviewModule } from './product-review/product-review.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -46,7 +47,8 @@ import { ProductReviewModule } from './product-review/product-review.module';
     ReviewModule,
     PhoneNumberModule,
     ProductReactionModule,
-    ProductReviewModule
+    ProductReviewModule,
+    CloudinaryModule
   ],
   providers: [
     {

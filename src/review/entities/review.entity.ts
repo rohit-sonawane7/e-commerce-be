@@ -27,5 +27,5 @@ export class Review {
   user: User;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 }

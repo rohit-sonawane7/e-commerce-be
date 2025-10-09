@@ -5,6 +5,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './entities/product.entity';
 import { GetProductQueryDto } from './dto/get-product-query-params-dto';
 import { buildPagination, PaginatedResult } from 'src/common/utils/pagination.util';
+import { ProductMapper } from './mapper/product.mapper';
 
 @Injectable()
 export class ProductService {
@@ -14,8 +15,9 @@ export class ProductService {
   ) { }
 
   async create(dto: CreateProductDto): Promise<Product> {
-    const product = this.productRepo.create(dto);
-    return this.productRepo.save(product);
+    const product = ProductMapper.toProductMapper(dto);
+    const mappedProduct = this.productRepo.create(product);
+    return this.productRepo.save(mappedProduct);
   }
 
   async findAll(query: GetProductQueryDto, skip?: number, take?: number): Promise<PaginatedResult<Product>> {
@@ -46,5 +48,9 @@ export class ProductService {
   async remove(id: string): Promise<void> {
     const result = await this.productRepo.delete(id);
     if (result.affected === 0) throw new NotFoundException('Product not found');
+  }
+
+  async update(id: string, product: Partial<Product>) {
+    return this.productRepo.update(id, { ...product });
   }
 }

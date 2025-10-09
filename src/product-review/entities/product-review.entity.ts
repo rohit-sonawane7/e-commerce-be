@@ -7,23 +7,23 @@ export class ProductReview {
     id: string;
 
     @Column()
-    productId: string;
+    product_id: string;
 
     @ManyToOne(() => Product, (product) => product.reviews, { onDelete: 'CASCADE' })
     product: Product;
 
     @Column({ nullable: true })
-    userId: string;
+    user_id: string;
 
     @Column({ nullable: true })
-    sessionId: string;
+    session_id: string;
 
     @Column('text')
-    reviewText: string;
+    review_text: string;
 
     @Column({ type: 'int', nullable: true })
     rating: number;
 
     @CreateDateColumn()
-    createdAt: Date;
+    created_at: Date;
 }

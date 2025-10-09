@@ -3,9 +3,12 @@ import {
     PrimaryGeneratedColumn,
     Column,
     OneToMany,
+    UpdateDateColumn,
+    CreateDateColumn,
 } from 'typeorm';
 import { Review } from '../../review/entities/review.entity';
 import { ProductReaction } from 'src/product-reaction/entities/product-reaction.entity';
+import { ProductReview } from 'src/product-review/entities/product-review.entity';
 
 @Entity()
 export class Product {
@@ -25,13 +28,10 @@ export class Product {
     price: number;
 
     @Column('decimal', { nullable: true })
-    originalPrice?: number;
+    original_price?: number;
 
     @Column('decimal', { nullable: true })
     discount?: number;
-
-    @Column()
-    image: string;
 
     @Column('text', { array: true, nullable: true })
     images?: string[];
@@ -43,7 +43,7 @@ export class Product {
     subcategory?: string;
 
     @Column({ default: true })
-    inStock: boolean;
+    in_stock: boolean;
 
     @Column('text', { array: true, nullable: true })
     sizes?: string[];
@@ -61,11 +61,20 @@ export class Product {
     reviews: Review[];
 
     @Column({ default: 0 })
-    likeCount: number;
+    like_count: number;
 
     @Column({ default: 0 })
-    dislikeCount: number;
+    dislike_count: number;
 
     @OneToMany(() => ProductReaction, (reaction) => reaction.product)
     reactions: ProductReaction[];
+
+    @OneToMany(() => ProductReview, (product_review) => product_review.product)
+    product_review: ProductReview[];
+
+    @CreateDateColumn()
+    created_at: Date;
+
+    @UpdateDateColumn()
+    updated_at: Date;
 }

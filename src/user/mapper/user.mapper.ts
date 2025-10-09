@@ -1,7 +1,5 @@
 import { SignUpResponseDto } from 'src/auth/dto/Response/signup.dto';
-import { User, UserRole } from '../entities/user.entity';
-import { AuthProcessEnums } from 'src/auth/enums/auth.enums';
-import { SignUpRequestDto } from 'src/auth/dto/Request/signup.dto';
+import { User } from '../entities/user.entity';
 import { JwtAccessTokenDto } from 'src/auth/dto/Response/jwt.dto';
 import { LoginResponseDto } from 'src/auth/dto/Response/login.dto';
 import { CreateUserDto } from '../dto/request/create-user.dto';

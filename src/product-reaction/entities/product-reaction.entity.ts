@@ -7,13 +7,13 @@ export class ProductReaction {
     id: string;
 
     @Column()
-    productId: string;
+    product_id: string;
 
     @Column({ nullable: true })
-    userId: string;
+    user_id: string;
 
     @Column({ nullable: true })
-    sessionId: string;
+    session_id: string;
 
     @ManyToOne(() => Product, (product) => product.reactions, { onDelete: 'CASCADE' })
     product: Product;
@@ -22,5 +22,5 @@ export class ProductReaction {
     type: 'like' | 'dislike';
 
     @CreateDateColumn()
-    createdAt: Date;
+    created_at: Date;
 }

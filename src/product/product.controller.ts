@@ -32,7 +32,6 @@ export class ProductController {
     return ProductMapper.toResponse(products);
   }
 
-  // 🔹 Public - Get one product
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const product = await this.productService.findOne(id);
@@ -42,16 +41,16 @@ export class ProductController {
     return ProductMapper.productMapper(product, avg, product.reviews?.length || 0);
   }
 
-  // 🔹 Admin only - Create product
-  @Post()
+  @Post('create')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  async create(@Body() dto: CreateProductDto) {
+  async create(
+    @Body() dto: CreateProductDto
+  ) {
     const product = await this.productService.create(dto);
-    return ProductMapper.productMapper(product, 0, 0);
+    return ProductMapper.productMapper(product);
   }
 
-  // 🔹 Admin only - Delete product
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)

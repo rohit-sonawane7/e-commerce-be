@@ -23,26 +23,22 @@ export class CreateProductDto {
   discount?: number;
 
   @IsString()
-  image: string;
-
-  @IsOptional()
-  @IsArray()
-  images?: string[];
-
-  @IsString()
   category: string;
 
   @IsOptional()
   @IsString()
   subcategory?: string;
 
-  @IsOptional()
   @IsBoolean()
-  inStock?: boolean;
+  inStock: boolean;
 
   @IsOptional()
   @IsArray()
   sizes?: string[];
+
+  @IsOptional()
+  @IsArray()
+  images?: string[];
 
   @IsOptional()
   @IsArray()
@@ -55,4 +51,8 @@ export class CreateProductDto {
   @IsOptional()
   @IsArray()
   tags?: string[];
+
+  @IsOptional()
+  @IsNumber()
+  rating?: number;
 }

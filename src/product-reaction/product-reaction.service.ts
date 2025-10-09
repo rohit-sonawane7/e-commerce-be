@@ -18,9 +18,9 @@ export class ProductReactionService {
     let existing: ProductReaction | null = null;
 
     if (userId) {
-      existing = await this.reactionRepo.findOne({ where: { productId, userId } });
+      existing = await this.reactionRepo.findOne({ where: { product_id: productId, user_id: userId } });
     } else if (sessionId) {
-      existing = await this.reactionRepo.findOne({ where: { productId, sessionId } });
+      existing = await this.reactionRepo.findOne({ where: { product_id: productId, session_id: sessionId } });
     }
 
     if (existing && existing.type === type) {
@@ -34,11 +34,11 @@ export class ProductReactionService {
     }
 
     const reaction = this.reactionRepo.create({
-      productId,
-      sessionId,
-      userId,
+      product_id: productId,
+      session_id: sessionId,
+      user_id: userId,
       type,
-      createdAt: new Date()
+      created_at: new Date()
     });
 
     await this.reactionRepo.save(reaction);
@@ -46,13 +46,13 @@ export class ProductReactionService {
   }
 
   async getStats(productId: string) {
-    const reactions = await this.reactionRepo.find({ where: { productId } });
+    const reactions = await this.reactionRepo.find({ where: { product_id: productId } });
     const likeCount = reactions.filter((r) => r.type === 'like').length;
     const dislikeCount = reactions.filter((r) => r.type === 'dislike').length;
     return { productId, likeCount, dislikeCount };
   }
 
   async mergeGuestData(userId: string, sessionId: string) {
-    await this.reactionRepo.update(sessionId, { userId, sessionId: undefined });
+    await this.reactionRepo.update(sessionId, { user_id: userId, session_id: undefined });
   }
 }

@@ -7,7 +7,6 @@ export class ProductResponseDto {
   price: number;
   originalPrice?: number;
   discount?: number;
-  image: string;
   images?: string[];
   category: string;
   subcategory?: string;
@@ -16,8 +15,8 @@ export class ProductResponseDto {
   colors?: string[];
   featured?: boolean;
   tags?: string[];
-  rating: number;        // aggregated
-  reviewCount: number;   // aggregated
+  rating: number;
+  reviewCount: number;
 }
 
 export class ProductResponseWithPaginationDto {

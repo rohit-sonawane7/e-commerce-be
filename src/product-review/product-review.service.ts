@@ -13,24 +13,24 @@ export class ProductReviewService {
 
   async addReview(productId: string, productReview: CreateProductReviewDto, userId?: string) {
     const review = this.reviewRepo.create({
-      productId,
-      reviewText: productReview.reviewText,
+      product_id: productId,
+      review_text: productReview.reviewText,
       rating: productReview.rating,
-      sessionId: productReview.sessionId,
-      userId: userId,
-      createdAt: new Date()
+      session_id: productReview.sessionId,
+      user_id: userId,
+      created_at: new Date()
     });
     return this.reviewRepo.save(review);
   }
 
   async getReviews(productId: string) {
     return this.reviewRepo.find({
-      where: { productId },
-      order: { createdAt: 'DESC' },
+      where: { product_id: productId },
+      order: { created_at: 'DESC' },
     });
   }
 
   async mergeGuestData(userId: string, sessionId: string) {
-    await this.reviewRepo.update(sessionId, { userId, sessionId: undefined });
+    await this.reviewRepo.update(sessionId, { user_id: userId, session_id: undefined });
   }
 }
