@@ -1,10 +1,18 @@
-import { IsOptional, IsInt, Min, IsBoolean } from 'class-validator';
+import { IsOptional, IsInt, Min, IsBoolean, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
+import { ProductCategory } from '../entities/product.entity';
 
 export class GetProductQueryDto {
     @IsOptional()
+    @IsEnum(ProductCategory, {
+        message: `status must be one of: ${Object.values(ProductCategory).join(', ')}`,
+    })
+    category?: ProductCategory;
+
+    @IsOptional()
+    @IsBoolean()
     @Type(() => Boolean)
-    featured?: boolean;
+    featured: boolean = false;
 
     @IsOptional()
     @Type(() => Number)

@@ -1,4 +1,3 @@
-// dto/product-response.dto.ts
 export class ProductResponseDto {
   id: string;
   title: string;
@@ -7,6 +6,7 @@ export class ProductResponseDto {
   price: number;
   originalPrice?: number;
   discount?: number;
+  image?: string;
   images?: string[];
   category: string;
   subcategory?: string;

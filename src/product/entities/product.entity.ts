@@ -10,6 +10,14 @@ import { Review } from '../../review/entities/review.entity';
 import { ProductReaction } from 'src/product-reaction/entities/product-reaction.entity';
 import { ProductReview } from 'src/product-review/entities/product-review.entity';
 
+
+export enum ProductCategory {
+    MEN = 'men',
+    WOMEN = 'women',
+    KIDS = 'kids',
+    ACCESSORIES = 'accessories'
+}
+
 @Entity()
 export class Product {
     @PrimaryGeneratedColumn('uuid')
@@ -30,14 +38,20 @@ export class Product {
     @Column('decimal', { nullable: true })
     original_price?: number;
 
-    @Column('decimal', { nullable: true })
+    @Column('decimal', { nullable: true, comment: "discount is in percentage" })
     discount?: number;
+
+    @Column('text', { nullable: true })
+    image: string;
 
     @Column('text', { array: true, nullable: true })
     images?: string[];
 
-    @Column()
-    category: string;
+    @Column({
+        type: 'enum',
+        enum: ProductCategory,
+        default: ProductCategory.ACCESSORIES,
+    }) category: ProductCategory;
 
     @Column({ nullable: true })
     subcategory?: string;

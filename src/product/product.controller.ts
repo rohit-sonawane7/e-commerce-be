@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards, Query, Put } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -16,6 +7,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { ProductMapper } from './mapper/product.mapper';
 import { UserRole } from 'src/user/entities/user.entity';
 import { GetProductQueryDto } from './dto/get-product-query-params-dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductController {
@@ -48,6 +40,17 @@ export class ProductController {
     @Body() dto: CreateProductDto
   ) {
     const product = await this.productService.create(dto);
+    return ProductMapper.productMapper(product);
+  }
+
+  @Put('update/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  async update(
+    @Param('id') id: string,
+    @Body() dto: UpdateProductDto
+  ) {
+    const product = await this.productService.update(id, dto);
     return ProductMapper.productMapper(product);
   }
 

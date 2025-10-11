@@ -6,6 +6,7 @@ import { Product } from './entities/product.entity';
 import { GetProductQueryDto } from './dto/get-product-query-params-dto';
 import { buildPagination, PaginatedResult } from 'src/common/utils/pagination.util';
 import { ProductMapper } from './mapper/product.mapper';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -29,7 +30,8 @@ export class ProductService {
         where: { ...query },
         relations: ['reviews'],
         skip,
-        take
+        take,
+        order: { created_at: 'DESC' }
       });
 
     return buildPagination(data, total, { skip, take });
@@ -50,7 +52,8 @@ export class ProductService {
     if (result.affected === 0) throw new NotFoundException('Product not found');
   }
 
-  async update(id: string, product: Partial<Product>) {
-    return this.productRepo.update(id, { ...product });
+  async update(id: string, product: UpdateProductDto) {
+    await this.productRepo.update(id, { ...product });
+    return this.findOne(id);
   }
 }

@@ -1,5 +1,6 @@
 // dto/create-product.dto.ts
-import { IsString, IsNumber, IsOptional, IsBoolean, IsArray } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsBoolean, IsArray, IsEnum } from 'class-validator';
+import { ProductCategory } from '../entities/product.entity';
 
 export class CreateProductDto {
   @IsString()
@@ -22,8 +23,10 @@ export class CreateProductDto {
   @IsNumber()
   discount?: number;
 
-  @IsString()
-  category: string;
+  @IsEnum(ProductCategory, {
+    message: `status must be one of: ${Object.values(ProductCategory).join(', ')}`,
+  })
+  category?: ProductCategory;
 
   @IsOptional()
   @IsString()
@@ -35,6 +38,10 @@ export class CreateProductDto {
   @IsOptional()
   @IsArray()
   sizes?: string[];
+
+  @IsOptional()
+  @IsString()
+  image?: string;
 
   @IsOptional()
   @IsArray()
