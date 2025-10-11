@@ -12,12 +12,6 @@ import { randomUUID } from 'crypto';
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
-  @Get('health-check')
-  @HttpCode(HttpStatus.OK)
-  healthCheck(): ResponseMessageDto {
-    return { message: "success" }
-  }
-
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   signup(@Body() dto: SignUpRequestDto): Promise<SignUpResponseDto> {

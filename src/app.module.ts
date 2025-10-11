@@ -12,6 +12,9 @@ import { PhoneNumberModule } from './phone-number/phone-number.module';
 import { ProductReactionModule } from './product-reaction/product-reaction.module';
 import { ProductReviewModule } from './product-review/product-review.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { AppService } from './app.service';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -40,6 +43,8 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
         ],
       }),
     }),
+    ScheduleModule.forRoot(),
+
     AuthModule,
     UserModule,
     EmailModule,
@@ -50,11 +55,13 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     ProductReviewModule,
     CloudinaryModule
   ],
+  controllers: [AppController],
   providers: [
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    AppService
   ],
 })
 export class AppModule { }
